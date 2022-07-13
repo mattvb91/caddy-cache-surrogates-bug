@@ -1,0 +1,78 @@
+{
+    "admin": {
+        "listen": ":2019"
+    },
+    "apps": {
+        "cache": {
+            "api": {
+                "basepath": "/__cache",
+                "souin": {
+                    "basepath": "/souin",
+                    "enable": true
+                }
+            },
+            "cdn": {
+                "dynamic": true,
+                "strategy": "hard"
+            },
+            "log_level": "debug",
+            "nuts": {
+                "path": "/tmp/nuts-souin"
+            },
+            "stale": "0s",
+            "ttl": "3600s"
+        },
+        "http": {
+            "servers": {
+                "srv0": {
+                    "listen": [
+                        ":80"
+                    ],
+                    "routes": [
+                        {
+                            "handle": [
+                                {
+                                    "handler": "headers",
+                                    "request": {
+                                        "delete": [
+                                            "cache-control",
+                                            "pragma"
+                                        ]
+                                    },
+                                    "response": {
+                                        "deferred": true,
+                                        "delete": [
+                                            "cache-control",
+                                            "pragma",
+                                            "server",
+                                            "x-powered-by"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "handler": "cache"
+                                },
+                                {
+                                    "handler": "reverse_proxy",
+                                    "upstreams": [
+                                        {
+                                            "dial": "node:3000"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "match": [
+                                {
+                                    "host": [
+                                        "localhost"
+                                    ]
+                                }
+                            ],
+                            "terminal": true
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

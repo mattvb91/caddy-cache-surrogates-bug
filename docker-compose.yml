@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+
+  node:
+    build:
+      context: ./docker/node
+    ports:
+      - 3000:3000
+    stdin_open: true
+    volumes:
+      - ./server.js:/app/server.js
+
+  caddy:
+    build:
+      context: ./docker/caddy
+    restart: unless-stopped
+    depends_on:
+      - node
+    command: [ "caddy", "run", "--resume" ]
+    ports:
+      - "80:80"
+      - "2019:2019"
+    volumes:
+      - ./docker/caddy/autosave.json:/config/caddy/autosave.json
