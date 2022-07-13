@@ -59,7 +59,7 @@ Second request also looks good with no 500ms delay and instance cache hit.
 
 ```json 
 http://localhost/__cache/souin
-This looks good again with new /api/test/entry
+This looks good again with new /api/test entry
 
 [
 "GET-localhost-/api/test",
