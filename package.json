@@ -1,0 +1,24 @@
+{
+  "name": "surrogate-keys-bug",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Setup",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattvb91/caddy-cache-surrogates-bug.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattvb91/caddy-cache-surrogates-bug/issues"
+  },
+  "homepage": "https://github.com/mattvb91/caddy-cache-surrogates-bug#readme",
+  "dependencies": {
+    "node-fetch": "^3.2.9"
+  }
+}

@@ -4,7 +4,7 @@ const requestListener = async (req, res) => {
     //Fake some latency to show its a miss
     await new Promise(r => setTimeout(r, 500));
 
-    res.setHeader('Surrogate-Key', req.url.replace('/', '').replace('api/', ''));
+    res.setHeader('Surrogate-Key', "global-key" + (req.url.length > 1 ? ", " : "") + req.url.replace('/', '').replace('api/', ''));
     res.writeHead(200);
     res.end('Hello, World: ' + req.url);
 }
