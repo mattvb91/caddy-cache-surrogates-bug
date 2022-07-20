@@ -7,4 +7,4 @@ WORKDIR /app
 
 EXPOSE 3001
 
-CMD npm run dev
+CMD npm install ; npm run build ; npm run start
