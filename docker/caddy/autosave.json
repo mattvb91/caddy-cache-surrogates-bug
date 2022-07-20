@@ -61,7 +61,7 @@
                                                     "handler": "reverse_proxy",
                                                     "upstreams": [
                                                         {
-                                                            "dial": "node:3000"
+                                                            "dial": "localhost:3000"
                                                         }
                                                     ]
                                                 }
@@ -80,7 +80,7 @@
                                     "handler": "reverse_proxy",
                                     "upstreams": [
                                         {
-                                            "dial": "nextjs:3001"
+                                            "dial": "localhost:3001"
                                         }
                                     ]
                                 }

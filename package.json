@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/mattvb91/caddy-cache-surrogates-bug#readme",
   "dependencies": {
-    "node-fetch": "^3.2.9"
+    "http": "0.0.1-security",
+    "node-fetch": "^3.2.9",
+    "performance": "^1.4.0"
   }
 }

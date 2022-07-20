@@ -1,4 +1,4 @@
-const http = require('http');
+import http from 'http';
 
 const requestListener = async (req, res) => {
     //Fake some latency to show its a miss and help test

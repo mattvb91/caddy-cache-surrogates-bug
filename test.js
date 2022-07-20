@@ -1,4 +1,5 @@
 import fetch from "node-fetch"
+import { performance } from 'perf_hooks';
 
 const purgeKey = async (key) => {
     console.log("Purging key: " + key);
