@@ -1,7 +1,7 @@
 FROM caddy:2.5.1-builder-alpine
 
-RUN xcaddy build --with github.com/darkweak/souin/plugins/caddy@141664b504dbf54f3adbf4b3f10ea64829617c25 \
-    --with github.com/darkweak/souin@141664b504dbf54f3adbf4b3f10ea64829617c25
+RUN xcaddy build --with github.com/darkweak/souin/plugins/caddy@b74ed599284fc5e5481dd547cdac9ae47a5f527d \
+    --with github.com/darkweak/souin@b74ed599284fc5e5481dd547cdac9ae47a5f527d
 
 # See https://caddyserver.com/docs/conventions#file-locations for details
 ENV XDG_CONFIG_HOME /config
