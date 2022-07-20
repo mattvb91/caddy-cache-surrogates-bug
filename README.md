@@ -2,45 +2,77 @@ Setup
 
 ```
 npm i
+cd nextjs && npm i
+cd ../
 docker-compose up -d
 node ./test.js
 ```
 
-### What am I trying to do?
-
-I have a frontend container for rendering HTML. The frontend makes requests to the backend container to fetch data. Both the frontend document & API JSON response needs to be saved with an associated surrogate key so I can flush both pages (or more) instantly if a change is made to an associated entity.
-
-In this example I have setup `server.js` to simply respond with surrogate key based on the url for testing.
-
-### Whats happening?
-
-If I tag a document with multiple keys, in this case: `test` & `global-key` I end up with surrogate key
-list of:
-
+expect error: 
 ```
-> GET /test HTTP/1.1
-> Host: localhost
-> User-Agent: curl/7.77.0
-> Accept: */*
-> 
-< HTTP/1.1 200 OK
-< Cache-Status: Souin; fwd=uri-miss; stored
-< Date: Tue, 19 Jul 2022 12:01:35 GMT
-< Surrogate-Key: global-key, test
+Purging key: global-key
+595.7504209997132 ms for new request
+Purging key: test
+21.132855999283493
+caddy-cache-surrogates-bug/test.js:80
+        throw new Error("Something was cached, this should be longer than 500ms response because we delay on node side. If its over 10ms this is only nextjs render time but still getting cache API")
+              ^
+
+Error: Something was cached, this should be longer than 500ms response because we delay on node side. If its over 10ms this is only nextjs render time but still getting cache API
 ```
 
-```json
-{
-    "STALE_global-key":",STALE_GET-localhost-%2Ftest",
-    "STALE_test":",STALE_GET-localhost-%2Ftest",
-    "global-key":",GET-localhost-%2Ftest",
-    "test":",GET-localhost-%2Ftest"
-}
+
+### Manual replication:
+
+exec into container and `rm -rf /tmp/nuts-souin/*` and restart caddy container to prevent any
+lingering caches
+
+```
+GET localhost/test
+
+Cache-Status: Souin; fwd=uri-miss; stored
+Content-Encoding: gzip
+Content-Length: 1681
+Content-Type: text/html; charset=utf-8
+Date: Wed, 20 Jul 2022 09:19:21 GMT
+Surrogate-Key: global-key, test
+
+time: 730ms first request, 1ms second request (cache hit)
 ```
 
-```json
-{
-    "STALE_test":",STALE_GET-localhost-%2Ftest",
-    "test":",GET-localhost-%2Ftest"
-}
+```
+GET localhost/api/test
+
+Cache-Status: Souin; fwd=uri-miss; stored
+Content-Length: 98
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 20 Jul 2022 09:20:07 GMT
+Surrogate-Key: global-key, test
+
+time: 560ms << THIS IS ALREADY AN ISSUE THIS SHOULD BE CACHED FROM REQUEST ABOVE ALREADY >>, 1ms second request (cache hit)
+```
+
+Purge:
+
+```
+curl --location --request PURGE 'http://localhost/__cache/souin' \
+--header 'Host: localhost' \
+--header 'Surrogate-Key: test'
+```
+
+Now the API props are wrong on this request:
+
+if you purge again you can see the time is never updated on this response even tho when you visit `/api/test` it gets updated there after flush
+
+```
+GET localhost/test
+
+Cache-Status: Souin; fwd=uri-miss; stored
+Content-Encoding: gzip
+Content-Length: 1681
+Content-Type: text/html; charset=utf-8
+Date: Wed, 20 Jul 2022 09:19:21 GMT
+Surrogate-Key: global-key, test
+
+time: 23ms first request THIS IS NOT CACHE HIT, THIS IS NEXTJS RENDER BUT IT RECEIVED API PROPS CACHE HIT. 2ms second request (cache hit)
 ```

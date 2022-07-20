@@ -53,10 +53,34 @@
                                     "handler": "cache"
                                 },
                                 {
+                                    "handler": "subroute",
+                                    "routes": [
+                                        {
+                                            "handle": [
+                                                {
+                                                    "handler": "reverse_proxy",
+                                                    "upstreams": [
+                                                        {
+                                                            "dial": "node:3000"
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "match": [
+                                                {
+                                                    "path": [
+                                                        "/api/*"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
                                     "handler": "reverse_proxy",
                                     "upstreams": [
                                         {
-                                            "dial": "node:3000"
+                                            "dial": "nextjs:3001"
                                         }
                                     ]
                                 }

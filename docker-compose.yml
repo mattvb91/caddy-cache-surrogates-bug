@@ -17,9 +17,21 @@ services:
     restart: unless-stopped
     depends_on:
       - node
+      - nextjs
     command: [ "caddy", "run", "--resume" ]
     ports:
       - "80:80"
       - "2019:2019"
     volumes:
       - ./docker/caddy/autosave.json:/config/caddy/autosave.json
+
+  nextjs:
+    build:
+      context: ./docker/nextjs
+    ports:
+      - 3001:3001
+    depends_on:
+      - node
+    stdin_open: true
+    volumes:
+      - ./nextjs:/app
