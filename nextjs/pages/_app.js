@@ -9,13 +9,13 @@ MyApp.getInitialProps = async ({ ctx }) => {
   if (!ctx.req || !ctx.res) {
     let path = ctx.asPath;
 
-    props = await (await fetch('/api/' + path)).json()
+    props = await (await fetch('/api' + path)).json()
   } else {
 
     //res.setHeader('Cache-Control', 'max-age=10, public')
     let path = ctx.req.url;
 
-    const req = await fetch('http://caddy' + '/api/' + path, {
+    const req = await fetch('http://caddy' + '/api' + path, {
       headers: ctx.req.headers
   });
     props = await req.json();
